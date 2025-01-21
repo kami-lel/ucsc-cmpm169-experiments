@@ -14,6 +14,7 @@ var centerHorz, centerVert;
 
 var trident_offset_x;
 var trident_offset_y;
+var reference_width;
 
 const SQRT3 = Math.sqrt(3);
 
@@ -69,10 +70,11 @@ function draw() {
   // set origin at center of screen
   translate(width / 2, height / 2);
 
-  // TODO make interesting
-  strokeWeight(10);
+  // link length w/ mouse Y position
+  const length = Math.max(mouseY / 5, 0) + 30;
 
-  const length = Math.max(mouseY / 5, 0) + 25;
+  reference_width = Math.max(mouseX * length / 1800, 1);
+  strokeWeight(reference_width);  // TODO make interesting
 
   // calculate how many loops is neccessary
   const cnt_horz = Math.ceil(width / length) / 3;
