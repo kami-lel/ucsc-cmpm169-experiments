@@ -7,24 +7,24 @@
 
 // Constants - User-servicable parts
 // In a longer project I like to put these in a separate file
-const VALUE1 = 1;
-const VALUE2 = 2;
+const BACKGROUND_COLOR = 255;
 
-// Globals
-let myInstance;
 let canvasContainer;
 var centerHorz, centerVert;
 
-class MyClass {
-    constructor(param1, param2) {
-        this.property1 = param1;
-        this.property2 = param2;
+
+class Trident {
+    constructor(x, y, length) {
+        this.x = x;
+        this.y = y;
+        this.length = length;
     }
 
-    myMethod() {
-        // code to run when method is called
+    draw() {
+      line(this.x, this.y, this.x, this.y + this.length)
     }
 }
+
 
 function resizeScreen() {
   centerHorz = canvasContainer.width() / 2; // Adjusted for drawing logic
@@ -42,38 +42,35 @@ function setup() {
   canvas.parent("canvas-container");
   // resize canvas is the page is resized
 
-  // create an instance of the class
-  myInstance = new MyClass("VALUE1", "VALUE2");
-
   $(window).resize(function() {
     resizeScreen();
   });
   resizeScreen();
+
 }
 
 // draw() function is called repeatedly, it's the main animation loop
 function draw() {
-  background(220);    
-  // call a method on the instance
-  myInstance.myMethod();
+  // empty canvas
+  background(BACKGROUND_COLOR);
 
-  // Set up rotation for the rectangle
-  push(); // Save the current drawing context
-  translate(centerHorz, centerVert); // Move the origin to the rectangle's center
-  rotate(frameCount / 100.0); // Rotate by frameCount to animate the rotation
-  fill(234, 31, 81);
-  noStroke();
-  rect(-125, -125, 250, 250); // Draw the rectangle centered on the new origin
-  pop(); // Restore the original drawing context
+  // set origin at center of screen
+  translate(width / 2, height / 2);
+  translate(centerHorz / 2, centerVert / 2);
 
-  // The text is not affected by the translate and rotate
-  fill(255);
-  textStyle(BOLD);
-  textSize(140);
-  text("p5*", centerHorz - 105, centerVert + 40);
+  strokeWeight(20);
+  line(0, 0, centerVert, centerHorz)
+
+  // HACK
+  // const trident = new Trident(centerHorz, centerVert, 0);
+  // trident.draw();
 }
 
 // mousePressed() function is called once after every time a mouse button is pressed
 function mousePressed() {
     // code to run when mouse is pressed
+}
+
+function keyPressed() {
+  if (key == 's' || key == 'S') saveCanvas(gd.timestamp(), 'png');
 }
