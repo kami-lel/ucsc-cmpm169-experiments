@@ -15,9 +15,43 @@ var centerHorz, centerVert;
 var trident_offset_x;
 var trident_offset_y;
 var reference_width;
+var another_seed = Math.floor(Math.random() * 10); // generates a random integer between 0 and 9
+
 
 const SQRT3 = Math.sqrt(3);
 
+
+function update_line_setting(i, j, trident_count, stroke_cnt) {
+
+  var weight;
+  var color;
+
+  seed = (i * 31) + (j * 17) + (trident_count * 3) + (stroke_cnt * 7) + another_seed
+
+switch (Math.abs(seed % 10)) {
+  case 5:
+      weight = 0.7;
+      color = [150, 50, 50]; // brighter dark red
+      break;
+  case 2:
+      weight = 0.9;
+      color = [50, 150, 50]; // brighter dark green
+      break;
+  case 3:
+      weight = 1.1;
+      color = [50, 50, 150]; // brighter dark blue
+      break;
+
+    default:
+        weight = 1;
+        color = [0, 0, 0]; // black
+}
+
+
+
+  strokeWeight(reference_width * weight);
+  stroke(color[0], color[1], color[2]);
+}
 
 class Trident {
     constructor(x, y, length) {
@@ -26,14 +60,17 @@ class Trident {
         this.length = length;
     }
 
-    draw() {
+    draw(i, j, trident_count) {
       // draw center to up
+      update_line_setting(i, j, trident_count, 0);
       line(this.x, this.y, this.x, this.y - this.length);
-  
+
       // draw bottom left
+      update_line_setting(i, j, trident_count, 1);
       line(this.x, this.y, this.x - trident_offset_x, this.y + trident_offset_y);
-  
+
       // draw bottom right
+      update_line_setting(i, j, trident_count, 2);
       line(this.x, this.y, this.x + trident_offset_x, this.y + trident_offset_y);
     }
 }
@@ -74,7 +111,6 @@ function draw() {
   const length = Math.max(mouseY / 5, 0) + 30;
 
   reference_width = Math.max(mouseX * length / 1800, 1);
-  strokeWeight(reference_width);  // TODO make interesting
 
   // calculate how many loops is neccessary
   const cnt_horz = Math.ceil(width / length /3);
@@ -88,15 +124,12 @@ function draw() {
       // draw 1st triden
       const x1 = i * 2 * trident_offset_x;
       const y1 = j * 6 * trident_offset_y;
-      if (x1 == 0 && y1==0 ) {  // HACK
-        console.log();
-      }
-      (new Trident(x1, y1, length)).draw();
-  
+      (new Trident(x1, y1, length)).draw(i, j, 0);
+
       // draw 2nd triden
       const x2 = x1 + trident_offset_x;
       const y2 = y1 + length + trident_offset_y;
-      (new Trident(x2, y2, length)).draw();
+      (new Trident(x2, y2, length)).draw(i, j, 1);
     }
   }
 }
@@ -104,6 +137,7 @@ function draw() {
 // mousePressed() function is called once after every time a mouse button is pressed
 function mousePressed() {
     // code to run when mouse is pressed
+  another_seed = Math.floor(Math.random() * 10); // generates a random integer between 0 and 9
 }
 
 function keyPressed() {
