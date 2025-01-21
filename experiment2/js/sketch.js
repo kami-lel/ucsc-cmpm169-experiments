@@ -12,6 +12,11 @@ const BACKGROUND_COLOR = 255;
 let canvasContainer;
 var centerHorz, centerVert;
 
+var trident_offset_x;
+var trident_offset_y;
+
+const SQRT3 = Math.sqrt(3);
+
 
 class Trident {
     constructor(x, y, length) {
@@ -21,7 +26,14 @@ class Trident {
     }
 
     draw() {
-      line(this.x, this.y, this.x, this.y + this.length)
+      // draw center to up
+      line(this.x, this.y, this.x, this.y - this.length);
+  
+      // draw bottom left
+      line(this.x, this.y, this.x - trident_offset_x, this.y + trident_offset_y);
+  
+      // draw bottom right
+      line(this.x, this.y, this.x + trident_offset_x, this.y + trident_offset_y);
     }
 }
 
@@ -29,7 +41,7 @@ class Trident {
 function resizeScreen() {
   centerHorz = canvasContainer.width() / 2; // Adjusted for drawing logic
   centerVert = canvasContainer.height() / 2; // Adjusted for drawing logic
-  console.log("Resizing...");
+  console.log("Resizing...", centerHorz, centerVert);
   resizeCanvas(canvasContainer.width(), canvasContainer.height());
   // redrawCanvas(); // Redraw everything based on new size
 }
@@ -56,14 +68,32 @@ function draw() {
 
   // set origin at center of screen
   translate(width / 2, height / 2);
-  translate(centerHorz / 2, centerVert / 2);
 
-  strokeWeight(20);
-  line(0, 0, centerVert, centerHorz)
+  // TODO make interesting
+  strokeWeight(10);
 
-  // HACK
-  // const trident = new Trident(centerHorz, centerVert, 0);
-  // trident.draw();
+  const length = Math.max(mouseY / 5, 0) + 25;
+
+  // calculate how many loops is neccessary
+  const cnt_horz = Math.ceil(width / length) / 3;
+  const cnt_vert = Math.ceil(height / length) / 6;
+
+  trident_offset_y = length / 2;
+  trident_offset_x = trident_offset_y * SQRT3;
+  for (let i = -cnt_horz; i <= cnt_horz; i++) {
+    for (let j = -cnt_vert; j <= cnt_vert; j++) {
+
+      // draw 1st triden
+      const x1 = i * 2 * trident_offset_x;
+      const y1 = j * 6 * trident_offset_y;
+      (new Trident(x1, y1, length)).draw();
+  
+      // draw 2nd triden
+      const x2 = x1 + trident_offset_x;
+      const y2 = y1 + length + trident_offset_y;
+      (new Trident(x2, y2, length)).draw();
+    }
+  }
 }
 
 // mousePressed() function is called once after every time a mouse button is pressed
