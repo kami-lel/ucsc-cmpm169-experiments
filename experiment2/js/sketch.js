@@ -77,8 +77,8 @@ function draw() {
   strokeWeight(reference_width);  // TODO make interesting
 
   // calculate how many loops is neccessary
-  const cnt_horz = Math.ceil(width / length) / 3;
-  const cnt_vert = Math.ceil(height / length) / 6;
+  const cnt_horz = Math.ceil(width / length /3);
+  const cnt_vert = Math.ceil(height / length / 6);
 
   trident_offset_y = length / 2;
   trident_offset_x = trident_offset_y * SQRT3;
@@ -88,6 +88,9 @@ function draw() {
       // draw 1st triden
       const x1 = i * 2 * trident_offset_x;
       const y1 = j * 6 * trident_offset_y;
+      if (x1 == 0 && y1==0 ) {  // HACK
+        console.log();
+      }
       (new Trident(x1, y1, length)).draw();
   
       // draw 2nd triden
