@@ -2,7 +2,7 @@
 <html>
 <head>
 	<!-- This title is used for tabs and bookmarks -->
-	<title>Experiment X - Subject/Topic</title>
+	<title>Experiment 2 - Hexagon Drawing</title>
 
 	<!-- Use UTF character set, a good idea with any webpage -->
 	<meta charset="UTF-8" />
@@ -32,7 +32,7 @@
 	<main id="content">
 		<section>
 
-			<h1>Experiment X - Subject/Topic</h1>
+			<h1>Experiment 2 - Hexagon Drawing</h1>
 
 			<div class="minor-section">
 				<div id="canvas-container">
@@ -41,16 +41,22 @@
                 <div class="fullscreen-box">
                     <button id="fullscreen">Fullscreen</button>
                 </div>
+				<p>
+					Move mouse around to change shapes of the hexagons.<br>
+					Click the screen to change colors.</p>
 			</div>
 
 			<div class="minor-section">
 				<h2>Description</h2>
-				<p>What are you trying to acomplish with this experiment?</p>
+				<p>Hexagon Drawing creates interactive vector art and animation by using mouse position to control line attributes and integrating hexagonal patterns.
+				</p>
 			</div>
 
 			<div class="minor-section">
 				<h2>Technical</h2>
-				<p>Describe in detail what you did technically and how it works?</p>
+				<p>There are some interesting points from a technical perspective. Despite being simple vector art, when the player decreases the size of the hexagon, more hexagons are required to fill the entire screen. During testing, it became apparent that if too many hexagons are drawn, it consumes a significant amount of computational power, resulting in a less smooth experience. Therefore, I needed to write code to optimize the location calculation process. Instead of using sine and cosine functions every time I want to draw a stroke, I calculate an x offset and y offset for each frame. I structured the mathematics so that all x-y locations can be calculated using simple addition without invoking trigonometry. This drastically improves performance.
+When attempting to introduce randomness into the pattern of the hexagons, I cannot rely on a random number generator to directly dictate each pattern. Doing so would mean that for each frame, every stroke would change color. However, to maintain visual consistency, I must implement a pseudo-random number generator. This algorithm takes into account the relative positions of each stroke in the image and ensures that the visual representation remains consistent.
+p</p>
 			</div>
 
 			<div class="minor-section">
