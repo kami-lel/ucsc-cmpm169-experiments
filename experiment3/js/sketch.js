@@ -5,26 +5,15 @@
 // Here is how you might set up an OOP p5.js project
 // Note that p5.js looks for a file called sketch.js
 
-// Constants - User-servicable parts
-// In a longer project I like to put these in a separate file
-const VALUE1 = 1;
-const VALUE2 = 2;
 
-// Globals
-let myInstance;
-let canvasContainer;
-var centerHorz, centerVert;
+const PARTICLE_CNT = 200;
+const BG_COLOR ='rgba(255, 255, 255, 255)' ;
+const BOX_SIZE = 300;
 
-class MyClass {
-    constructor(param1, param2) {
-        this.property1 = param1;
-        this.property2 = param2;
-    }
-
-    myMethod() {
-        // code to run when method is called
-    }
-}
+// an array to add multiple particles
+let particles = [];
+var box;
+var prebox;
 
 function resizeScreen() {
   centerHorz = canvasContainer.width() / 2; // Adjusted for drawing logic
@@ -42,36 +31,38 @@ function setup() {
   canvas.parent("canvas-container");
   // resize canvas is the page is resized
 
-  // create an instance of the class
-  myInstance = new MyClass("VALUE1", "VALUE2");
-
   $(window).resize(function() {
     resizeScreen();
   });
   resizeScreen();
+
+
+  for(let i = 0; i<PARTICLE_CNT ;i++){
+    particles.push(new Particle());
+  }
+
+  box = new Box(width / 2, height/2, BOX_SIZE);
+  prebox = new Box(box.centerX - BOX_SIZE, box.centerY, BOX_SIZE);
 }
 
 // draw() function is called repeatedly, it's the main animation loop
 function draw() {
-  background(220);    
-  // call a method on the instance
-  myInstance.myMethod();
-
-  // Set up rotation for the rectangle
-  push(); // Save the current drawing context
-  translate(centerHorz, centerVert); // Move the origin to the rectangle's center
-  rotate(frameCount / 100.0); // Rotate by frameCount to animate the rotation
-  fill(234, 31, 81);
-  noStroke();
-  rect(-125, -125, 250, 250); // Draw the rectangle centered on the new origin
-  pop(); // Restore the original drawing context
-
-  // The text is not affected by the translate and rotate
-  fill(255);
-  textStyle(BOLD);
-  textSize(140);
-  text("p5*", centerHorz - 105, centerVert + 40);
+  background(BG_COLOR);
+  box.drawBox();
+  for(let i = 0;i<particles.length;i++) {
+    particles[i].drawParticle();
+    if (isPointInBox(prebox, particles[i].x, particles[i].y)) {
+      particles[i].calcCollision();
+    } else {
+      particles[i].ySpeed = random(-1, 1);
+    }
+    particles[i].moveParticle();
+  }
 }
+
+
+
+
 
 // mousePressed() function is called once after every time a mouse button is pressed
 function mousePressed() {
