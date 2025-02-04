@@ -5,23 +5,19 @@
 // Here is how you might set up an OOP p5.js project
 // Note that p5.js looks for a file called sketch.js
 
-
-var distortionAmount = 0;
 var defaultImage;
-var originalImage;
+var distortionImage;
 
 // Globals
 let myInstance;
 let canvasContainer;
 var centerHorz, centerVert;
 
-
-
 function preload() {
-  defaultImage = loadImage("https://upload.wikimedia.org/wikipedia/en/6/64/Windows_XP_Luna.png");
-  
+  defaultImage = loadImage(
+    "https://upload.wikimedia.org/wikipedia/en/6/64/Windows_XP_Luna.png"
+  );
 }
-
 
 // setup() function is called once when the program starts
 function setup() {
@@ -32,13 +28,15 @@ function setup() {
   canvas.parent("canvas-container");
   // resize canvas is the page is resized
 
+  // setup context
+  drawingContext.globalCompositeOperation = "lighten";
+  setUpBufferRed(defaultImage);
+  setupBufferGreen(defaultImage);
+  setupBufferBlue(defaultImage);
 
+  distortionImage = new DistortionImage(defaultImage, canvas);
 
-  originalImage = defaultImage
-
-  
-
-  $(window).resize(function() {
+  $(window).resize(function () {
     resizeScreen();
   });
   resizeScreen();
@@ -46,15 +44,11 @@ function setup() {
 
 // draw() function is called repeatedly, it's the main animation loop
 function draw() {
-  background("rgba(0,0,0,1)");
-  image(originalImage, 0, 0, originalImage.width * 2, originalImage.height * 2);
+  background("rgb(0, 0, 0)");
+  distortionImage.update();
 }
 
-
-
-
 function resizeScreen() {
-
   centerHorz = canvasContainer.width() / 2; // Adjusted for drawing logic
   centerVert = canvasContainer.height() / 2; // Adjusted for drawing logic
   console.log("Resizing...");
