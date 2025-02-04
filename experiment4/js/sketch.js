@@ -6,7 +6,7 @@
 // Note that p5.js looks for a file called sketch.js
 
 var defaultImage;
-var distortionImage;
+var shakeExperience;
 
 // Globals
 let canvasContainer;
@@ -29,7 +29,16 @@ function setup() {
 
   // setup context
   drawingContext.globalCompositeOperation = "lighten";
-  distortionImage = new DistortionImage(defaultImage, canvas);
+  shakeExperience = new ShakeExperience(defaultImage, canvas);
+
+  // setup event listner
+  const shakeButton = document.getElementById("shake");
+
+  // Add an event listener to the button
+  shakeButton.addEventListener("click", function () {
+    // Your code for what happens when the button is clicked
+    shakeExperience.shake();
+  });
 
   $(window).resize(function () {
     resizeScreen();
@@ -41,8 +50,7 @@ function setup() {
 function draw() {
   clear();
   background("rgb(0, 0, 0)");
-
-  distortionImage.update();
+  shakeExperience.update();
 }
 
 function resizeScreen() {
@@ -51,4 +59,8 @@ function resizeScreen() {
   console.log("Resizing...");
   resizeCanvas(canvasContainer.width(), canvasContainer.height());
   // redrawCanvas(); // Redraw everything based on new size
+}
+
+function deviceShaken() {
+  shakeExperience.shake();
 }

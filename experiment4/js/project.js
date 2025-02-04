@@ -1,5 +1,7 @@
+const MILLI_PER_FRAME = 2000;
+
 class DistortionImage {
-  constructor(preProcessImage, canvas) {
+  constructor(preProcessImage, canvas, distortionSpeed) {
     this.preProcessImage = preProcessImage;
 
     let scaleFactor = Math.min(
@@ -15,6 +17,8 @@ class DistortionImage {
     this.setupBufferBlue();
 
     this.distortionAmount = 0;
+    this.distortionSpeed = distortionSpeed;
+    this.distorted = false;
   }
 
   setUpBufferRed() {
@@ -105,9 +109,14 @@ class DistortionImage {
     this.drawBuffer1();
     this.drawBuffer2();
     this.drawBuffer3();
+
+    if (this.distorted && this.distortionAmount < 1) {
+      this.distortionAmount += this.distortionSpeed;
+    }
   }
 
   drawBuffer1() {
+    // TODO random
     let xShift = 0;
     let yShift = 0;
 
@@ -121,8 +130,9 @@ class DistortionImage {
   }
 
   drawBuffer2() {
-    let xShift = this.distortionAmount * 40;
-    let yShift = this.distortionAmount * 10;
+    // TODO random
+    let xShift = this.distortionAmount * 30;
+    let yShift = this.distortionAmount * 6;
     image(
       this.bufferGreen,
       Math.floor(xShift),
@@ -133,8 +143,9 @@ class DistortionImage {
   }
 
   drawBuffer3() {
-    let xShift = this.distortionAmount * 20;
-    let yShift = this.distortionAmount * 15;
+    // TODO random
+    let xShift = this.distortionAmount * 15;
+    let yShift = this.distortionAmount * 12;
     image(
       this.bufferBlue,
       Math.floor(xShift),
@@ -142,5 +153,47 @@ class DistortionImage {
       this.scaledWidth,
       this.scaledHeight
     );
+  }
+}
+
+class ShakeExperience {
+  constructor(preProcessImage, canvas) {
+    this.preProcessImage = preProcessImage;
+    this.canvas = canvas;
+
+    this.init();
+  }
+
+  init() {
+    this.glitchStartTime = millis(); // TODO
+
+    this.distortionImage = new DistortionImage(
+      this.preProcessImage,
+      this.canvas,
+      random(0.008, 0.018)
+    );
+
+    this.shakeCnt = 0;
+    this.shakeTarget = floor(random(6));
+
+    this.shakeAnimationStart = null;
+  }
+
+  update() {
+    if (millis() > this.glitchStartTime) {
+      this.distortionImage.distorted = true;
+    }
+
+    this.distortionImage.update();
+  }
+
+  shake() {
+    if (this.distortionImage.distortionAmount >= 1) {
+      this.shakeCnt += 1;
+
+      if (this.shakeCnt >= this.shakeTarget) {
+        this.init();
+      }
+    }
   }
 }
