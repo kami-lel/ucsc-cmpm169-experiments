@@ -9,7 +9,6 @@ var defaultImage;
 var distortionImage;
 
 // Globals
-let myInstance;
 let canvasContainer;
 var centerHorz, centerVert;
 
@@ -30,10 +29,6 @@ function setup() {
 
   // setup context
   drawingContext.globalCompositeOperation = "lighten";
-  setUpBufferRed(defaultImage);
-  setupBufferGreen(defaultImage);
-  setupBufferBlue(defaultImage);
-
   distortionImage = new DistortionImage(defaultImage, canvas);
 
   $(window).resize(function () {
@@ -44,7 +39,9 @@ function setup() {
 
 // draw() function is called repeatedly, it's the main animation loop
 function draw() {
+  clear();
   background("rgb(0, 0, 0)");
+
   distortionImage.update();
 }
 
