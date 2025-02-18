@@ -1,67 +1,48 @@
-// sketch.js - purpose and description here
-// Author: Your Name
-// Date:
+/*
+ * Accesses the GPT-4o API with the provided input string.
+ * This function implements bearer authentication in the header.
+ * @param {string} inputString - The input string to send to the API.
+ * @returns {string|null} Returns the output string from the API, or null if an error occurs.
+ */
+async function accessGpt4o(inputString) {
+  try {
+    const apiKey =
+      "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";
 
-// Here is how you might set up an OOP p5.js project
-// Note that p5.js looks for a file called sketch.js
+    const endpoint = "https://api.openai.com/v1/chat/completions";
+    const response = await axios.post(
+      endpoint,
+      {
+        model: "gpt-4o-mini", // Changed to use gpt-4o-mini model
+        messages: [{ role: "user", content: inputString }],
+        max_tokens: 500,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`, // Bearer authentication included
+        },
+      }
+    );
 
-var defaultImage;
-var shakeExperience;
+    const outputString = response.data.choices[0].message.content;
 
-// Globals
-let canvasContainer;
-var centerHorz, centerVert;
+    // Append the outputString into the paragraph with id "sentence"
+    document.getElementById("sentence").innerText += outputString;
 
-let shape;
-
-function preload() {
-  defaultImage = loadImage(
-    "https://upload.wikimedia.org/wikipedia/en/6/64/Windows_XP_Luna.png"
-  );
+    return outputString;
+  } catch (error) {
+    console.error("Error accessing GPT-4o model:", error);
+    return null;
+  }
 }
-
-// setup() function is called once when the program starts
-function setup() {
-  // place our canvas, making it fit our container
-  canvasContainer = $("#canvas-container");
-
-  let canvas = createCanvas(
-    canvasContainer.width(),
-    canvasContainer.height(),
-    WEBGL
-  );
-  canvas.parent("canvas-container");
-  // resize canvas is the page is resized
-
-  ortho();
-
-  // TODO
-  $(window).resize(function () {
-    resizeScreen();
-  });
-  resizeScreen();
+async function checkGpt4oResult(inputString) {
+  const result = await accessGpt4o(inputString);
+  if (result) {
+    console.log(result);
+    console.log(`Request: ${inputString}`);
+  } else {
+    console.log("Error retrieving result.");
+  }
 }
-
-// draw() function is called repeatedly, it's the main animation loop
-function draw() {
-  clear();
-  background("rgb(0, 0, 0)");
-
-  // Enable orbiting with the mouse.
-  orbitControl();
-
-  // Draw the p5.Geometry object.
-  model(buildGeometry(crateShape));
-}
-
-function resizeScreen() {
-  centerHorz = canvasContainer.width() / 2; // Adjusted for drawing logic
-  centerVert = canvasContainer.height() / 2; // Adjusted for drawing logic
-  console.log("Resizing...");
-  resizeCanvas(canvasContainer.width(), canvasContainer.height());
-  // redrawCanvas(); // Redraw everything based on new size
-}
-
-function crateShape() {
-  cone();
-}
+checkGpt4oResult("hey who are you");
