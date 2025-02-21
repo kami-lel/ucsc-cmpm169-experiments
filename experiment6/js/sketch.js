@@ -20,10 +20,9 @@ Art: Art is the most beautiful of all lies because it brings together [creativit
 
 async function generateNewParagraph(word) {
   try {
-    const apiKey =
-      "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";
+    const apiKey = "sk-fee0681d136d4e5fbb1bb74a0d023e5a";
 
-    const endpoint = "https://api.openai.com/v1/chat/completions";
+    const endpoint = "http://47.251.29.212:3000/api/chat/completions";
     const response = await axios.post(
       endpoint,
       {
